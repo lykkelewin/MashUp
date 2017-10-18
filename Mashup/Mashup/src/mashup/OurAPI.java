@@ -12,8 +12,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
-
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -132,23 +138,52 @@ public class OurAPI {
 		});
 		
 
-
+		/**
+		 * Get access token, bearer 60 min
+		 */
 		get("/spotify/authorization", (request, response) -> {
 			response.type("application/json");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			//BQC1-kpTL_9sIApkRU01nbV2gYz482HvydfO07K9hKDjQgxqI04B1x9gvS9IIsYbmTmiTPBRAcABZFi4TAm-cg
 			return gson.toJson(spotify.createRequestForToken());
 		});
 		/**
-		 * Den hÃ¤r metoden funkar inte. Fel token?
+		 * Den här metoden funkar inte. Fel token?
 		 */
 		get("/spotify/", (request, response) -> {
 			response.type("application/json");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			return gson.toJson(spotify.userRequest());
+//			return gson.toJson(spotify.userRequest());
+			return gson.toJson(spotify.testSearch());
 
 		});
+		
+		get("/callback/", (req, res) ->{
+			
+			
+		    try {
+		        // If you are using maven then your files
+		        // will be in a folder called resources.
+		        // getResource() gets that folder
+		        // and any files you specify.
+		        URL url = OurAPI.class.getResource("/callback.html");
+		        System.out.println(url);
+		        // Return a String which has all
+		        // the contents of the file.
+		        Path path = Paths.get(url.toURI());
+		        return new String(Files.readAllBytes(path), Charset.defaultCharset());
+		    } catch (IOException | URISyntaxException e) {
+		        // Add your own exception handlers here.
+		    }
+		    return "";
+		});
 
-//		
+		
+
+		
+		
+		
+		
 		get("/spotify/tracks", (request, response) -> {
 			response.type("application/json");
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -238,5 +273,6 @@ public class OurAPI {
 
 		return count;
 	}
+	
 }
 
