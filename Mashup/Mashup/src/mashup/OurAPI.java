@@ -6,15 +6,22 @@ import static spark.Spark.post;
 import static spark.Spark.put;
 import static spark.SparkBase.port;
 
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.lang.reflect.Type;
+
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.sun.javafx.scene.paint.GradientUtils.Parser;
+
+
 
 
 public class OurAPI {	
@@ -22,6 +29,8 @@ public class OurAPI {
 		port(5000);
 		SetlistAPI setlist = new SetlistAPI();
 		SpotifyAPI spotify = new SpotifyAPI();
+		String endPointSpotify = "https://accounts.spotify.com";
+		
 		
 //		setlist.getSetListFromArtist(setlist.setArtist("beyonce") + setlist.setCity("Rio de Janeiro"));
 
@@ -125,21 +134,71 @@ public class OurAPI {
 
 
 		get("/spotify/authorization", (request, response) -> {
-//			List<Unicorn> unicorns = storage.fetchUnicorns();
 			response.type("application/json");
-//			response.header("Access-Control-Allow-Origin", "*");
-			
-			JsonParser parser = new JsonParser();
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(spotify.createRequestForToken());
+		});
+		/**
+		 * Den här metoden funkar inte. Fel token?
+		 */
+		get("/spotify/", (request, response) -> {
+			response.type("application/json");
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(spotify.userRequest());
 
-			JsonElement el = parser.parse(spotify.getMethod(spotify.getMethod(spotify.authorization())));
-			String jsonString = gson.toJson(el); // done
-			
-			return jsonString;
-//			return gson.toJson(unicorns);
+		});
+
+//		
+		get("/spotify/tracks", (request, response) -> {
+			response.type("application/json");
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(spotify.trackSearch());
 		});
 		
+		get("/spotify/test", (request, response) -> {
+			response.type("code");
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(spotify.createRequestForAuthorizationToken());
+		});
 		
+		get("/spotify/heavy", (request, response) -> {
+			response.type("application/json");
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(spotify.heavyTesting());
+		});
+		
+		get("/spotify/authorization/newPlaylist", (request, response) -> {
+			response.type("application/json");
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			return gson.toJson(spotify.createNewPlaylist());
+		});
+		
+//		post("/callback/", (request, response) -> {
+//			response.type("application/json");
+//			Gson gson = gson.fromJson(request.body(), classOfT)
+//		});
+		
+//		post(endPointSpotify+"/api/token", (request, response) -> {
+//			response.type("application/json");
+//			Gson gson = gson.fromJson(request.body(), (Type) request.headers());
+//			return gson;
+//		});
+		
+		
+//		
+		
+//		get("/spotify/browse", (request, response) -> {
+//			response.type("application/json");
+//			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//			
+////			return gson.toJson(spotify.test(spotify.getMethod(spotify.authorization())));
+//			return gson.toJson(spotify.test(spotify.authorization()));
+//			
+////			JsonElement el = Parser.parseAngle(spotify.test(spotify.authorization()));
+////			return gson.toJson(jsonElement)
+//		});
+//		
+//		
 //		post("/", (request, response) -> {
 //			response.type("application/json");
 //			response.header("Access-Control-Allow-Origin", "*");
@@ -180,3 +239,4 @@ public class OurAPI {
 		return count;
 	}
 }
+
